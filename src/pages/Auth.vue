@@ -51,28 +51,28 @@ const handle = async (mode: 'in' | 'up') => {
     
     <div class="relative w-full max-w-md">
       <div class="mb-8 text-center">
-        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-md gold-glow">
+        <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-card shadow-md gold-glow">
           <Sparkles class="h-8 w-8 text-primary" />
         </div>
         <h1 class="font-serif text-3xl font-bold">Join Glam &amp; Go</h1>
         <p class="mt-2 text-muted-foreground">Elegance is just a few clicks away.</p>
       </div>
 
-      <div class="overflow-hidden rounded-3xl border border-white bg-white/70 p-8 shadow-xl backdrop-blur-sm">
+      <div class="overflow-hidden rounded-3xl border border-border bg-card/70 p-8 shadow-xl backdrop-blur-sm">
         <Tabs default-value="in" class="w-full">
           <TabsList class="grid w-full grid-cols-2 rounded-xl bg-secondary/30 p-1">
-            <TabsTrigger value="in" class="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">Sign in</TabsTrigger>
-            <TabsTrigger value="up" class="rounded-lg data-[state=active]:bg-white data-[state=active]:shadow-sm">Sign up</TabsTrigger>
+            <TabsTrigger value="in" class="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Sign in</TabsTrigger>
+            <TabsTrigger value="up" class="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Sign up</TabsTrigger>
           </TabsList>
           
           <TabsContent value="in" class="mt-8 space-y-5 animate-in fade-in slide-in-from-bottom-2">
             <div class="space-y-2">
               <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email or Username</Label>
-              <Input v-model="email" type="text" placeholder="pam@example.com or AdminPam" class="rounded-xl border-secondary/50 bg-white/50 focus:ring-primary/20" />
+              <Input v-model="email" type="text" placeholder="Enter Email Address" class="rounded-xl border-secondary/50 bg-background/50 focus:ring-primary/20" />
             </div>
             <div class="space-y-2">
               <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Password</Label>
-              <Input v-model="password" type="password" placeholder="••••••••" class="rounded-xl border-secondary/50 bg-white/50 focus:ring-primary/20" />
+              <Input v-model="password" type="password" placeholder="Enter Password" class="rounded-xl border-secondary/50 bg-background/50 focus:ring-primary/20" />
             </div>
             <Button class="w-full rounded-xl py-6 shadow-lg shadow-primary/20 gold-glow" :disabled="busy" @click="handle('in')">
               {{ busy ? 'Signing in...' : 'Sign in' }}
