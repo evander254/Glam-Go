@@ -5,6 +5,7 @@ import { ShoppingBag, Sparkles } from 'lucide-vue-next';
 import { useAuth } from '@/composables/useAuth';
 import { useCartStore } from '@/stores/cart';
 import { Button } from '@/components/ui/button/index';
+import ThemeToggle from '@/components/ThemeToggle.vue';
 
 const route = useRoute();
 const { user, isAdmin, signOut } = useAuth();
@@ -34,7 +35,7 @@ const isActive = (path: string) => route.path === path;
   <header 
     :class="[
       'sticky top-0 z-50 w-full transition-all duration-300',
-      isScrolled ? 'bg-white/80 backdrop-blur-md shadow-lg border-b border-primary/10 py-2' : 'bg-transparent py-4'
+      isScrolled ? 'bg-background/80 backdrop-blur-md shadow-lg border-b border-primary/10 py-2' : 'bg-transparent py-4'
     ]"
   >
     <div class="container mx-auto flex items-center justify-between px-4 lg:px-8">
@@ -75,6 +76,10 @@ const isActive = (path: string) => route.path === path;
         </router-link>
         
         <div class="h-8 w-[1px] bg-border mx-2 hidden sm:block" />
+
+        <ThemeToggle />
+
+        <div class="h-8 w-[1px] bg-border mx-1 hidden sm:block" />
 
         <template v-if="user">
           <Button size="sm" variant="ghost" class="rounded-full px-6 text-muted-foreground hover:text-primary" @click="signOut">

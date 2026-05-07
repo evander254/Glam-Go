@@ -3,7 +3,7 @@ import { Sparkles, Instagram, Phone, MapPin, Mail } from 'lucide-vue-next';
 </script>
 
 <template>
-  <footer class="bg-white border-t border-primary/10 pt-20 pb-10">
+  <footer class="bg-background border-t border-primary/10 pt-20 pb-10">
     <div class="container mx-auto px-4 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
         <!-- Brand Section -->

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Toaster } from '@/components/ui/sonner/index';
 import Navbar from '@/components/Navbar.vue';
+import Footer from '@/components/Footer.vue';
 import { useAuth } from '@/composables/useAuth';
 
 // Initialize auth
@@ -14,6 +15,7 @@ initAuth();
     <main class="flex-1">
       <router-view />
     </main>
+    <Footer />
   </div>
   <Toaster />
 </template>

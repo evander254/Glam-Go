@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import { Sparkles, Calendar, ShoppingBag, Star, CheckCircle2, ArrowRight, Instagram, Phone, MapPin } from 'lucide-vue-next';
 import { Button } from '@/components/ui/button/index';
-import Footer from '@/components/Footer.vue';
 import { supabase } from '@/integrations/supabase/client';
 
 // Fallback images for static sections
@@ -60,7 +59,7 @@ onMounted(async () => {
               </Button>
             </router-link>
             <a href="#services">
-              <Button size="lg" variant="outline" class="rounded-full px-10 h-14 text-base border-white/30 text-white hover:bg-white/10 backdrop-blur-sm transition-all">
+              <Button size="lg" variant="outline" class="rounded-full px-10 h-14 text-base border-white/30 text-white bg-leopard hover:bg-white/10 backdrop-blur-sm transition-all shadow-lg">
                 View Services
               </Button>
             </a>
@@ -117,11 +116,11 @@ onMounted(async () => {
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div class="relative group">
             <div class="absolute -inset-4 bg-gradient-to-tr from-primary/30 to-accent/30 blur-2xl opacity-40 group-hover:opacity-60 transition-opacity" />
-            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-white">
+            <div class="relative rounded-[2.5rem] overflow-hidden shadow-2xl border-8 border-card">
               <img :src="pamImg" alt="Pam - Makeup Artist" class="w-full aspect-[4/5] object-cover" />
             </div>
             <!-- Experience Badge -->
-            <div class="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-xl border border-primary/10 flex items-center gap-4 animate-in fade-in zoom-in duration-700">
+            <div class="absolute -bottom-6 -right-6 bg-card p-6 rounded-2xl shadow-xl border border-primary/10 flex items-center gap-4 animate-in fade-in zoom-in duration-700">
               <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
                 <Sparkles class="h-6 w-6 text-primary" />
               </div>
@@ -155,7 +154,7 @@ onMounted(async () => {
     </section>
 
     <!-- PORTFOLIO SECTION -->
-    <section class="py-32 bg-white">
+    <section class="py-32 bg-background">
       <div class="container mx-auto px-4">
         <div class="text-center mb-20">
           <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">My Portfolio</h2>
@@ -200,7 +199,7 @@ onMounted(async () => {
           <div 
             v-for="t in testimonials" 
             :key="t.id" 
-            class="bg-white p-10 rounded-3xl shadow-sm border border-primary/5 relative hover-lift"
+            class="bg-card p-10 rounded-3xl shadow-sm border border-primary/5 relative hover-lift"
           >
             <div class="absolute top-0 left-10 -translate-y-1/2 bg-primary h-12 w-12 rounded-2xl flex items-center justify-center text-white shadow-lg">
               <span class="text-2xl font-serif">"</span>
@@ -230,7 +229,7 @@ onMounted(async () => {
           </p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-6 pt-4">
             <router-link to="/book">
-              <Button size="lg" class="bg-white text-primary hover:bg-secondary rounded-full px-12 h-16 text-lg font-bold shadow-2xl hover-lift">
+              <Button size="lg" class="bg-foreground text-background hover:bg-secondary rounded-full px-12 h-16 text-lg font-bold shadow-2xl hover-lift">
                 Book Your Session Now
               </Button>
             </router-link>
@@ -238,8 +237,6 @@ onMounted(async () => {
         </div>
       </div>
     </section>
-
-    <Footer />
   </div>
 </template>
 
