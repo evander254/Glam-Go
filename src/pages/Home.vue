@@ -6,8 +6,8 @@ import Footer from '@/components/Footer.vue';
 import { supabase } from '@/integrations/supabase/client';
 
 // Fallback images for static sections
-const heroImg = "file:///C:/Users/PC/.gemini/antigravity/brain/52696a24-1a06-4306-9158-df5d7a3ec6d2/hero_makeup_background_1777997459709.png";
-const pamImg = "file:///C:/Users/PC/.gemini/antigravity/brain/52696a24-1a06-4306-9158-df5d7a3ec6d2/pam_profile_1777997479799.png";
+import heroImg from '@/assets/hero.jpg';
+import pamImg from '@/assets/pam.jpg';
 
 const services = [
   { name: "Soft Glam", price: 1000, desc: "Flawless natural finish for daytime events or professional photos." },
@@ -177,9 +177,11 @@ onMounted(async () => {
         </div>
         
         <div class="text-center mt-16">
-          <Button variant="outline" class="rounded-full px-10 h-12 border-primary/20 hover:border-primary transition-all">
-            Follow on Instagram <Instagram class="ml-2 h-4 w-4" />
-          </Button>
+          <a href="https://www.instagram.com/glamandgo.by_pam/" target="_blank" rel="noopener noreferrer">
+            <Button variant="outline" class="rounded-full px-10 h-12 border-primary/20 hover:border-primary transition-all">
+              Follow on Instagram <Instagram class="ml-2 h-4 w-4" />
+            </Button>
+          </a>
         </div>
       </div>
     </section>

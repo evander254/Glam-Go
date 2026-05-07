@@ -20,10 +20,10 @@ import { Sparkles, Instagram, Phone, MapPin, Mail } from 'lucide-vue-next';
             Elegance redefined. Providing luxury makeup artistry for bridal, glam, editorial and special occasions.
           </p>
           <div class="flex items-center gap-4">
-            <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+            <a href="https://www.instagram.com/glamandgo.by_pam/" class="h-10 w-10 flex items-center justify-center rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
               <Instagram class="h-5 w-5" />
             </a>
-            <a href="#" class="h-10 w-10 flex items-center justify-center rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
+            <a href="mailto:glamandgo.by_pam@gmail.com" class="h-10 w-10 flex items-center justify-center rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
               <Mail class="h-5 w-5" />
             </a>
           </div>
@@ -57,7 +57,7 @@ import { Sparkles, Instagram, Phone, MapPin, Mail } from 'lucide-vue-next';
           <ul class="space-y-4">
             <li class="flex items-start gap-3 text-muted-foreground">
               <Phone class="h-5 w-5 text-primary shrink-0" />
-              <span>+254 700 000 000</span>
+              <span>+254 732 239117</span>
             </li>
             <li class="flex items-start gap-3 text-muted-foreground">
               <MapPin class="h-5 w-5 text-primary shrink-0" />
@@ -65,7 +65,7 @@ import { Sparkles, Instagram, Phone, MapPin, Mail } from 'lucide-vue-next';
             </li>
             <li class="flex items-start gap-3 text-muted-foreground">
               <Instagram class="h-5 w-5 text-primary shrink-0" />
-              <span>@glamandgo_bypam</span>
+              <span>@glamandgo.by_pam</span>
             </li>
           </ul>
         </div>
