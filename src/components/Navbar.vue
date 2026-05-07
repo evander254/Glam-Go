@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { ShoppingBag, Sparkles } from 'lucide-vue-next';
+import { ShoppingBag, Sparkles, Menu, X } from 'lucide-vue-next';
 import { useAuth } from '@/composables/useAuth';
 import { useCartStore } from '@/stores/cart';
 import { Button } from '@/components/ui/button/index';
@@ -10,7 +10,7 @@ import ThemeToggle from '@/components/ThemeToggle.vue';
 const route = useRoute();
 const { user, isAdmin, signOut } = useAuth();
 const cart = useCartStore();
-
+const isMobileMenuOpen = ref(false);
 const isScrolled = ref(false);
 
 const handleScroll = () => {
@@ -44,7 +44,7 @@ const isActive = (path: string) => route.path === path;
           <Sparkles class="h-6 w-6 text-primary" />
           <div class="absolute -inset-1 bg-primary/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
         </div>
-        <span class="font-serif text-2xl font-bold tracking-tight text-foreground hidden sm:block">
+        <span class="font-serif text-xl sm:text-2xl font-bold tracking-tight text-foreground">
           Glam &amp; Go <span class="text-gradient-gold italic font-medium">by Pam</span>
         </span>
       </router-link>
@@ -87,13 +87,66 @@ const isActive = (path: string) => route.path === path;
           </Button>
         </template>
         <template v-else>
-          <router-link to="/auth">
+          <router-link to="/auth" class="hidden sm:block">
             <Button size="sm" class="rounded-full px-8 bg-primary hover:bg-primary/90 text-white shadow-md hover:shadow-lg transition-all">
               Sign in
             </Button>
           </router-link>
         </template>
+
+        <!-- Mobile Menu Toggle -->
+        <button 
+          class="md:hidden p-2 text-foreground/80 hover:text-primary transition-colors"
+          @click="isMobileMenuOpen = !isMobileMenuOpen"
+        >
+          <Menu v-if="!isMobileMenuOpen" class="h-6 w-6" />
+          <X v-else class="h-6 w-6" />
+        </button>
       </div>
     </div>
+
+    <!-- Mobile Navigation Overlay -->
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0 -translate-y-4"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-4"
+    >
+      <div 
+        v-if="isMobileMenuOpen" 
+        class="md:hidden absolute top-full left-0 w-full bg-background/95 backdrop-blur-lg border-b border-primary/10 shadow-xl overflow-hidden"
+      >
+        <nav class="flex flex-col p-6 gap-4">
+          <router-link to="/" :class="[linkCls, { [activeCls]: isActive('/') }]" @click="isMobileMenuOpen = false">
+            Home
+          </router-link>
+          <router-link to="/book" :class="[linkCls, { [activeCls]: isActive('/book') }]" @click="isMobileMenuOpen = false">
+            Book
+          </router-link>
+          <router-link to="/shop" :class="[linkCls, { [activeCls]: isActive('/shop') }]" @click="isMobileMenuOpen = false">
+            Shop
+          </router-link>
+          <router-link v-if="user" to="/dashboard" :class="[linkCls, { [activeCls]: isActive('/dashboard') }]" @click="isMobileMenuOpen = false">
+            Dashboard
+          </router-link>
+          <router-link v-if="isAdmin" to="/admin" :class="[linkCls, { [activeCls]: isActive('/admin') }]" @click="isMobileMenuOpen = false">
+            Admin
+          </router-link>
+          <div class="h-[1px] bg-border my-2" />
+          <template v-if="user">
+            <button class="text-left text-sm font-medium text-muted-foreground hover:text-primary" @click="signOut(); isMobileMenuOpen = false">
+              Sign out
+            </button>
+          </template>
+          <template v-else>
+            <router-link to="/auth" class="w-full" @click="isMobileMenuOpen = false">
+              <Button class="w-full rounded-full bg-primary text-white">Sign in</Button>
+            </router-link>
+          </template>
+        </nav>
+      </div>
+    </Transition>
   </header>
 </template>
