@@ -72,7 +72,7 @@ import { Sparkles, Instagram, Phone, MapPin, Mail } from 'lucide-vue-next';
       </div>
 
       <div class="pt-8 border-t border-primary/5 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-        <p>&copy; 2024 Glam &amp; Go by Pam. All rights reserved.</p>
+        <p>&copy; 2026 Glam &amp; Go by Pam. All rights reserved.</p>
         <div class="flex items-center gap-6">
           <a href="#" class="hover:text-primary transition-colors">Privacy Policy</a>
           <a href="#" class="hover:text-primary transition-colors">Terms of Service</a>

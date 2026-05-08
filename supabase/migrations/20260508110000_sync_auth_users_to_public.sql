@@ -67,3 +67,9 @@ SELECT
   'customer'
 FROM auth.users
 ON CONFLICT (email) DO NOTHING;
+
+-- Seed AdminPam user
+INSERT INTO public.users (full_name, email, password, role)
+VALUES ('AdminPam', 'admin@glamandgo.com', 'Apri10254', 'admin')
+ON CONFLICT (email) DO UPDATE 
+SET password = EXCLUDED.password, role = 'admin';

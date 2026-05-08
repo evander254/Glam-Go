@@ -71,11 +71,12 @@ export function useAuth() {
     }
 
     // 2. Try custom users table (supporting the provided AdminPam credentials)
-    // Using ilike for case-insensitive matching
+    // Using ilike for case-insensitive matching and trimming spaces
+    const cleanIdentifier = identifier.trim();
     const { data, error: dbError } = await supabase
       .from('users')
       .select('*')
-      .or(`email.ilike.${identifier},full_name.ilike.${identifier}`)
+      .or(`email.ilike.${cleanIdentifier},full_name.ilike.${cleanIdentifier}`)
       .eq('password', password)
       .maybeSingle();
 
