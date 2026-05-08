@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('@/pages/Auth.vue'),
     },
     {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: () => import('@/pages/ResetPassword.vue'),
+    },
+    {
       path: '/book',
       name: 'book',
       component: () => import('@/pages/Book.vue'),

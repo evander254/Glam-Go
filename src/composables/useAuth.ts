@@ -95,12 +95,42 @@ export function useAuth() {
     return { error: 'Invalid email/username or password' };
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, fullName: string, phone: string) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/` },
+      options: { 
+        emailRedirectTo: `${window.location.origin}/reset-password`,
+        data: {
+          full_name: fullName,
+          phone: phone,
+        }
+      },
     });
+    return { error: error?.message ?? null };
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  };
+
+  const updatePassword = async (password: string) => {
+    // 1. Update Supabase Auth password
+    const { error } = await supabase.auth.updateUser({ password });
+    
+    if (!error && user.value?.email) {
+      // 2. Sync with custom users table if they exist there
+      await supabase
+        .from('users')
+        .update({ password: password })
+        .eq('email', user.value.email);
+        
+      console.log('[Auth] Password synced to custom users table');
+    }
+    
     return { error: error?.message ?? null };
   };
 
@@ -119,6 +149,8 @@ export function useAuth() {
     initAuth,
     signIn,
     signUp,
+    resetPassword,
+    updatePassword,
     signOut,
   };
 }

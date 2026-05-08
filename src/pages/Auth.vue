@@ -9,11 +9,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs/i
 import { toast } from 'vue-sonner'
 import { Sparkles } from 'lucide-vue-next'
 
-const { user, signIn, signUp } = useAuth()
+const { user, signIn, signUp, resetPassword } = useAuth()
 const router = useRouter()
 const email = ref('')
+const fullName = ref('')
+const phone = ref('')
 const password = ref('')
 const busy = ref(false)
+const showReset = ref(false)
 
 watchEffect(() => {
   if (user.value) {
@@ -30,7 +33,7 @@ const handle = async (mode: 'in' | 'up') => {
   busy.value = true
   const { error } = mode === 'in' 
     ? await signIn(email.value, password.value) 
-    : await signUp(email.value, password.value)
+    : await signUp(email.value, password.value, fullName.value, phone.value)
   
   busy.value = false
   if (error) {
@@ -39,6 +42,22 @@ const handle = async (mode: 'in' | 'up') => {
     toast.success('Account created! Check your email to confirm.')
   } else {
     toast.success('Welcome back!')
+  }
+}
+
+const handleReset = async () => {
+  if (!email.value) {
+    toast.error('Please enter your email')
+    return
+  }
+  busy.value = true
+  const { error } = await resetPassword(email.value)
+  busy.value = false
+  if (error) {
+    toast.error(error)
+  } else {
+    toast.success('Password reset email sent!')
+    showReset.value = false
   }
 }
 </script>
@@ -54,12 +73,27 @@ const handle = async (mode: 'in' | 'up') => {
         <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-card shadow-md gold-glow">
           <Sparkles class="h-8 w-8 text-primary" />
         </div>
-        <h1 class="font-serif text-3xl font-bold">Join Glam &amp; Go</h1>
-        <p class="mt-2 text-muted-foreground">Elegance is just a few clicks away.</p>
+        <h1 class="font-serif text-3xl font-bold">{{ showReset ? 'Reset Password' : 'Join Glam & Go' }}</h1>
+        <p class="mt-2 text-muted-foreground">
+          {{ showReset ? 'Enter your email to receive a reset link.' : 'Elegance is just a few clicks away.' }}
+        </p>
       </div>
 
       <div class="overflow-hidden rounded-3xl border border-border bg-card/70 p-8 shadow-xl backdrop-blur-sm">
-        <Tabs default-value="in" class="w-full">
+        <div v-if="showReset" class="space-y-5 animate-in fade-in slide-in-from-bottom-2">
+          <div class="space-y-2">
+            <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email Address</Label>
+            <Input v-model="email" type="email" placeholder="pam@example.com" class="rounded-xl border-secondary/50 bg-background/50 focus:ring-primary/20" />
+          </div>
+          <Button class="w-full rounded-xl py-6 shadow-lg shadow-primary/20 gold-glow" :disabled="busy" @click="handleReset">
+            {{ busy ? 'Sending...' : 'Send Reset Link' }}
+          </Button>
+          <button @click="showReset = false" class="w-full text-center text-sm text-primary hover:underline">
+            Back to Sign in
+          </button>
+        </div>
+
+        <Tabs v-else default-value="in" class="w-full">
           <TabsList class="grid w-full grid-cols-2 rounded-xl bg-secondary/30 p-1">
             <TabsTrigger value="in" class="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Sign in</TabsTrigger>
             <TabsTrigger value="up" class="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">Sign up</TabsTrigger>
@@ -71,7 +105,10 @@ const handle = async (mode: 'in' | 'up') => {
               <Input v-model="email" type="text" placeholder="Enter Email Address" class="rounded-xl border-secondary/50 bg-background/50 focus:ring-primary/20" />
             </div>
             <div class="space-y-2">
-              <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Password</Label>
+              <div class="flex justify-between items-center px-1">
+                <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground">Password</Label>
+                <button @click="showReset = true" class="text-[10px] text-primary hover:underline">Forgot password?</button>
+              </div>
               <Input v-model="password" type="password" placeholder="Enter Password" class="rounded-xl border-secondary/50 bg-background/50 focus:ring-primary/20" />
             </div>
             <Button class="w-full rounded-xl py-6 shadow-lg shadow-primary/20 gold-glow" :disabled="busy" @click="handle('in')">
@@ -83,6 +120,14 @@ const handle = async (mode: 'in' | 'up') => {
             <div class="space-y-2">
               <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Email Address</Label>
               <Input v-model="email" type="email" placeholder="pam@example.com" class="rounded-xl border-secondary/50 bg-white/50 focus:ring-primary/20" />
+            </div>
+            <div class="space-y-2">
+              <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Full Name</Label>
+              <Input v-model="fullName" placeholder="Jane Doe" class="rounded-xl border-secondary/50 bg-white/50 focus:ring-primary/20" />
+            </div>
+            <div class="space-y-2">
+              <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Phone Number</Label>
+              <Input v-model="phone" placeholder="+254..." class="rounded-xl border-secondary/50 bg-white/50 focus:ring-primary/20" />
             </div>
             <div class="space-y-2">
               <Label class="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">Password</Label>

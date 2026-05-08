@@ -23,14 +23,48 @@ const searchQuery = ref('')
 const viewMode = ref<'grid' | 'list'>('grid')
 const selectedProduct = ref<Product | null>(null)
 
-onMounted(async () => {
-  const { data } = await supabase
+const page = ref(0)
+const pageSize = 20
+const hasMore = ref(true)
+const loading = ref(false)
+const sentinel = ref<HTMLElement | null>(null)
+
+const fetchProducts = async () => {
+  if (loading.value || !hasMore.value) return
+  
+  loading.value = true
+  const start = page.value * pageSize
+  const end = start + pageSize - 1
+  
+  const { data, error } = await supabase
     .from('products')
     .select('*')
     .order('created_at', { ascending: false })
+    .range(start, end)
   
-  if (data) {
-    products.value = data as Product[]
+  if (error) {
+    toast.error('Failed to load products')
+  } else if (data) {
+    if (data.length < pageSize) {
+      hasMore.value = false
+    }
+    products.value = [...products.value, ...(data as Product[])]
+    page.value++
+  }
+  loading.value = false
+}
+
+onMounted(() => {
+  fetchProducts()
+  
+  const observer = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && hasMore.value && !loading.value) {
+      fetchProducts()
+    }
+  }, { threshold: 0.1 })
+  
+  if (sentinel.value) {
+    observer.observe(sentinel.value)
   }
 })
 
@@ -188,6 +222,17 @@ const closeDetails = () => {
             </Button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Loading State & Sentinel -->
+    <div ref="sentinel" class="py-12 flex justify-center w-full">
+      <div v-if="loading" class="flex flex-col items-center gap-3">
+        <div class="h-10 w-10 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <p class="text-sm text-muted-foreground animate-pulse">Loading more premium products...</p>
+      </div>
+      <div v-else-if="!hasMore && products.length > 0" class="text-muted-foreground text-sm font-medium">
+        You've reached the end of our curated collection.
       </div>
     </div>
 

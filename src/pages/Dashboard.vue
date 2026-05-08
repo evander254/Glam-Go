@@ -3,6 +3,10 @@ import { ref, onMounted, watchEffect } from 'vue'
 import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from '@/composables/useAuth'
 import { Button } from '@/components/ui/button/index'
+import { Input } from '@/components/ui/input/index'
+import { Label } from '@/components/ui/label/index'
+import { toast } from 'vue-sonner'
+import { Phone, AlertCircle } from 'lucide-vue-next'
 
 type Booking = { 
   id: number 
@@ -22,6 +26,10 @@ type Order = {
 const { user, loading } = useAuth()
 const bookings = ref<Booking[]>([])
 const orders = ref<Order[]>([])
+const profile = ref<{ id: number; phone: string | null } | null>(null)
+const newPhone = ref('')
+const updatingPhone = ref(false)
+const showPhonePrompt = ref(false)
 
 watchEffect(async () => {
   if (!user.value) return
@@ -29,11 +37,14 @@ watchEffect(async () => {
   // Fetch the public user ID (integer)
   const { data: publicUser } = await supabase
     .from('users')
-    .select('id')
+    .select('id, phone')
     .eq('email', user.value.email)
     .single()
     
   if (!publicUser) return
+  
+  profile.value = publicUser
+  showPhonePrompt.value = !publicUser.phone
 
   const { data: bookingsData } = await supabase
     .from('bookings')
@@ -61,6 +72,25 @@ const getStatusBadgeClass = (status: string) => {
   if (status === 'confirmed') return 'bg-blue-100 text-blue-700'
   return 'bg-amber-100 text-amber-700'
 }
+
+const updatePhone = async () => {
+  if (!newPhone.value) return toast.error('Please enter a phone number')
+  
+  updatingPhone.value = true
+  const { error } = await supabase
+    .from('users')
+    .update({ phone: newPhone.value })
+    .eq('id', profile.value?.id)
+  
+  updatingPhone.value = false
+  if (error) {
+    toast.error(error.message)
+  } else {
+    toast.success('Phone number updated!')
+    if (profile.value) profile.value.phone = newPhone.value
+    showPhonePrompt.value = false
+  }
+}
 </script>
 
 <template>
@@ -75,6 +105,26 @@ const getStatusBadgeClass = (status: string) => {
     <template v-else>
       <h1 class="font-serif text-3xl font-bold">My Account</h1>
       <p class="mt-1 text-sm text-muted-foreground">{{ user.email }}</p>
+
+      <!-- Phone Number Prompt -->
+      <div v-if="showPhonePrompt" class="mt-8 rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
+        <div class="flex items-start gap-4">
+          <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <Phone class="h-5 w-5 text-primary" />
+          </div>
+          <div class="flex-1">
+            <h3 class="font-serif text-lg font-bold">Complete your profile</h3>
+            <p class="text-sm text-muted-foreground">Please add your phone number so we can reach you about your bookings.</p>
+            
+            <div class="mt-4 flex max-w-sm gap-2">
+              <Input v-model="newPhone" placeholder="+254 7..." class="rounded-xl" />
+              <Button :disabled="updatingPhone" @click="updatePhone" class="gold-glow">
+                {{ updatingPhone ? 'Saving...' : 'Save' }}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <section class="mt-8">
         <h2 class="font-serif text-xl font-semibold">My Bookings</h2>
