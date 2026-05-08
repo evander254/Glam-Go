@@ -51,18 +51,27 @@ const submit = async () => {
   let userId = null
   
   if (user.value) {
-    // Fetch the public user ID (integer)
-    const { data: publicUser, error: userError } = await supabase
-      .from('users')
-      .select('id')
-      .eq('email', user.value.email)
-      .single()
-      
-    if (userError || !publicUser) {
-      busy.value = false
-      return toast.error('User profile not found. Please try logging in again.')
+    // If the ID is already a number (string), it's our public BIGINT ID from a mock session
+    if (!isNaN(Number(user.value.id))) {
+      userId = Number(user.value.id)
+    } else {
+      // Fetch the public user ID (integer) from the users table by email
+      const { data: publicUser, error: userError } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', user.value.email)
+        .single()
+        
+      if (userError || !publicUser) {
+        // If we can't find it, it might be a sync issue. 
+        // But let's try to proceed without a userId if it's critical, or show error.
+        // For now, keep the error but make it more descriptive if it's an RLS issue.
+        console.error('Profile fetch error:', userError)
+        busy.value = false
+        return toast.error('User profile not found. Please try logging in again or contact support.')
+      }
+      userId = publicUser.id
     }
-    userId = publicUser.id
   }
 
   const { error } = await supabase.from('bookings').insert({

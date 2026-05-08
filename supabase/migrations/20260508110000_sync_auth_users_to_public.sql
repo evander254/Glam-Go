@@ -10,6 +10,11 @@ CREATE TABLE IF NOT EXISTS public.users (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Ensure columns exist if table was already created
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS phone TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS password TEXT;
+ALTER TABLE public.users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'customer';
+
 -- Enable RLS
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 
@@ -32,6 +37,29 @@ CREATE POLICY "Admins view all profiles" ON public.users FOR SELECT USING (
     AND u.role = 'admin'
   )
 );
+
+-- RPC to safely check credentials bypassing RLS
+DROP FUNCTION IF EXISTS check_user_credentials(text, text);
+CREATE OR REPLACE FUNCTION check_user_credentials(identifier text, pass text)
+RETURNS TABLE (
+  user_id bigint, 
+  user_email character varying, 
+  user_full_name character varying, 
+  user_role character varying
+) 
+LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  RETURN QUERY
+  SELECT 
+    u.id::bigint, 
+    u.email::character varying, 
+    u.full_name::character varying, 
+    u.role::character varying
+  FROM users u
+  WHERE (u.email ILIKE identifier OR u.full_name ILIKE identifier)
+    AND u.password = pass;
+END;
+$$;
 
 -- Trigger function to sync auth.users to public.users
 CREATE OR REPLACE FUNCTION public.handle_new_user()

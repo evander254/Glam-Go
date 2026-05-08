@@ -70,29 +70,42 @@ export function useAuth() {
       if (!error) return { error: null };
     }
 
-    // 2. Try custom users table (supporting the provided AdminPam credentials)
-    // Using ilike for case-insensitive matching and trimming spaces
+    // 2. Try custom users table via RPC (to bypass RLS for seed users)
     const cleanIdentifier = identifier.trim();
-    const { data, error: dbError } = await supabase
-      .from('users')
-      .select('*')
-      .or(`email.ilike.${cleanIdentifier},full_name.ilike.${cleanIdentifier}`)
-      .eq('password', password)
-      .maybeSingle();
+    console.log('[Auth] Calling RPC check_user_credentials with:', cleanIdentifier);
 
-    if (dbError) {
-      console.error('[Auth] Database error during custom login:', dbError);
+    const { data, error: rpcError } = await supabase.rpc('check_user_credentials', {
+      identifier: cleanIdentifier,
+      pass: password
+    });
+
+    if (rpcError) {
+      console.error('[Auth] RPC error during login:', rpcError.message, rpcError.details);
+      // If the function doesn't exist, it means the migration wasn't applied
+      if (rpcError.message.includes('does not exist')) {
+        return { error: 'Database setup incomplete. Please apply the latest migration in Supabase.' };
+      }
+      return { error: rpcError.message };
     }
 
-    if (data) {
-      console.log('[Auth] Custom login successful for:', data.full_name);
-      user.value = { id: data.id.toString(), email: data.email || identifier } as any;
-      role.value = data.role;
+    console.log('[Auth] RPC result:', data);
+
+    if (data && data.length > 0) {
+      const u = data[0];
+      console.log('[Auth] Login successful for:', u.user_full_name);
+      // Create a mock user object compatible with the app's expectations
+      user.value = { 
+        id: u.user_id.toString(), 
+        email: u.user_email || identifier,
+        user_metadata: { full_name: u.user_full_name }
+      } as any;
+      role.value = u.user_role;
+      
       localStorage.setItem('glam_go_mock_user', JSON.stringify({ user: user.value, role: role.value }));
       return { error: null };
     }
 
-    console.warn('[Auth] Custom login failed: No matching user found or wrong password');
+    console.warn('[Auth] Login failed: No matching user found in custom table');
     return { error: 'Invalid email/username or password' };
   };
 
