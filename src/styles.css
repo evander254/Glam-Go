@@ -46,6 +46,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-cocoa: var(--cocoa);
   
   --font-serif: "Playfair Display", serif;
   --font-sans: "Inter", sans-serif;
@@ -78,6 +79,7 @@
   --border: oklch(0.92 0.02 340);
   --input: oklch(0.92 0.02 340);
   --ring: oklch(0.82 0.08 340);
+  --cocoa: oklch(0.45 0.08 30);
 }
 
 .dark {
@@ -100,6 +102,7 @@
   --border: oklch(0.25 0.02 340);
   --input: oklch(0.25 0.02 340);
   --ring: oklch(0.75 0.1 340);
+  --cocoa: oklch(0.55 0.1 30);
 }
 
 @layer base {

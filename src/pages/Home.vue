@@ -59,7 +59,7 @@ onMounted(async () => {
               </Button>
             </router-link>
             <a href="#services">
-              <Button size="lg" variant="outline" class="rounded-full px-10 h-14 text-base border-white/30 text-white bg-leopard hover:bg-white/10 backdrop-blur-sm transition-all shadow-lg">
+              <Button size="lg" variant="outline" class="rounded-full px-10 h-14 text-base border-white/30 text-white bg-cocoa hover:bg-cocoa/90 backdrop-blur-sm transition-all shadow-lg">
                 View Services
               </Button>
             </a>
